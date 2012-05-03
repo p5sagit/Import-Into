@@ -3,7 +3,7 @@ package Import::Into;
 use strict;
 use warnings FATAL => 'all';
 
-our $VERSION = '1.0';
+our $VERSION = '1.000000'; # 1.0.0
 
 my %importers;
 
