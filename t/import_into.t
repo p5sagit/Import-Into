@@ -1,6 +1,6 @@
 use strict;
 use warnings FATAL => 'all';
-use Test::More;
+use Test::More qw(no_plan);
 
 BEGIN {
 
@@ -48,5 +48,3 @@ is(do {
 is(scalar @w, 1, 'Only one entry in @w');
 
 like($w[0], qr/uninitialized/, 'Correct warning');
-
-done_testing;
