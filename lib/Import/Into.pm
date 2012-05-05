@@ -38,6 +38,24 @@ Import::Into - import packages into other packages
     Thing2->import::into($target, qw(import arguments));
   }
 
+Note: you don't need to do anything more clever than this provided you
+document that people wanting to re-export your module should also be using
+L<Import::Into>. In fact, for a single module you can simply do:
+
+  sub import {
+    ...
+    Thing1->import::into(scalar caller);
+  }
+
+Notably, this works:
+
+  use base qw(Exporter);
+
+  sub import {
+    shift->export_to_level(1);
+    Thing1->import::into(scalar caller);
+  }
+
 =head1 DESCRIPTION
 
 Writing exporters is a pain. Some use L<Exporter>, some use L<Sub::Exporter>,
@@ -62,13 +80,35 @@ But it doesn't work for pragmas - pragmas need:
 
   $thing->import;
 
-So, the solution is:
+because they're designed to affect the code currently being compiled - so
+within an eval, that's the scope of the eval itself, not the module that
+just C<use>d you - so
+
+  sub import {
+    eval "use strict;"
+  }
+
+doesn't do what you wanted, but
+
+  sub import {
+    strict->import;
+  }
+
+will apply L<strict> to the calling file correctly.
+
+Of course, now you have two new problems - first, that you still need to
+know if something's a pragma, and second that you can't use either of
+these approaches alone on something like L<Moose> or L<Moo> that's both
+an exporter and a pragma.
+
+So, the complete solution is:
 
   my $sub = eval "package $target; sub { shift->import(\@_) }";
   $sub->($thing, @import_args);
 
 which means that import is called from the right place for pragmas to take
-effect, and from the right package for caller checking to work.
+effect, and from the right package for caller checking to work - and so
+behaves correctly for all types of exporter, for pragmas, and for hybrids.
 
 Remembering all this, however, is excessively irritating. So I wrote a module
 so I didn't have to anymore. Loading L<Import::Into> will create a method
