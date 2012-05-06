@@ -56,6 +56,14 @@ Notably, this works:
     Thing1->import::into(scalar caller);
   }
 
+Note 2: You do B<not> need to do anything to Thing1 to be able to call
+C<import::into> on it. This is a global method, and is callable on any
+package (and in fact on any object as well, although it's rarer that you'd
+want to do that).
+
+If how and why this all works is of interest to you, please read on to the
+description immediately below.
+
 =head1 DESCRIPTION
 
 Writing exporters is a pain. Some use L<Exporter>, some use L<Sub::Exporter>,
@@ -111,16 +119,43 @@ effect, and from the right package for caller checking to work - and so
 behaves correctly for all types of exporter, for pragmas, and for hybrids.
 
 Remembering all this, however, is excessively irritating. So I wrote a module
-so I didn't have to anymore. Loading L<Import::Into> will create a method
-C<import::into> which you can call on a package to import it into another
+so I didn't have to anymore. Loading L<Import::Into> creates a global method
+C<import::into> which you can call on any package to import it into another
 package. So now you can simply write:
 
   use Import::Into;
 
   $thing->import::into($target, @import_args);
 
-Just make sure you already loaded C<$thing> - if you're receiving this from
-a parameter, I recommend using L<Module::Runtime>:
+This works because of how perl resolves method calls - a call to a simple
+method name is resolved against the package of the class or object, so
+
+  $thing->method_name(@args);
+
+is roughly equivalent to:
+
+  my $code_ref = $thing->can('method_name');
+  $code_ref->($thing, @args);
+
+while if a C<::> is found, the lookup is made relative to the package name
+(i.e. everything before the last C<::>) so
+
+  $thing->Package::Name::method_name(@args);
+
+is roughly equivalent to:
+
+  my $code_ref = Package::Name->can('method_name');
+  $code_ref->($thing, @args);
+
+So since L<Import::Into> defines a method C<into> in package C<import>
+the syntax reliably calls that.
+
+For more craziness of this order, have a look at the article I wrote at
+L<http://shadow.cat/blog/matt-s-trout/madness-with-methods> which covers
+coderef abuse and the C<${\...}> syntax.
+
+Final note: You do still need to ensure that you already loaded C<$thing> - if
+you're receiving this from a parameter, I recommend using L<Module::Runtime>:
 
   use Import::Into;
   use Module::Runtime qw(use_module);
@@ -139,7 +174,7 @@ None yet - maybe this software is perfect! (ahahahahahahahahaha)
 
 =head1 COPYRIGHT
 
-Copyright (c) 2010-2011 the Import::Into L</AUTHOR> and L</CONTRIBUTORS>
+Copyright (c) 2012 the Import::Into L</AUTHOR> and L</CONTRIBUTORS>
 as listed above.
 
 =head1 LICENSE

@@ -1,3 +1,7 @@
+  - clarify how the method name trick works since apparently now people
+    understand the eval/import trick they've noticed that that isn't the
+    only bit of crazy
+
 1.000002 - 2012-05-05
   - improve explanation and add more examples to the SYNOPSIS
 
