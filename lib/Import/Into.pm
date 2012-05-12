@@ -73,6 +73,7 @@ want to do that).
 Finally, we also provide an C<unimport::out_of> to allow the exporting of the
 effect of C<no>:
 
+  # unimport::out_of was added in 1.1.0 (1.001000)
   sub unimport {
     Moose->unimport::out_of(scalar caller); # no MyThing == no Moose
   }
