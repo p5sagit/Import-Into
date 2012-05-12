@@ -7,14 +7,23 @@ our $VERSION = '1.000003'; # 1.0.3
 
 my %importers;
 
+sub _importer {
+  my $target = shift;
+  \($importers{$target} ||= eval qq{
+    package $target;
+    sub { my \$m = splice \@_, 1, 1; shift->\$m(\@_) };
+  } or die "Couldn't build importer for $target: $@")
+}
+  
+
 sub import::into {
   my ($class, $target, @args) = @_;
-  $class->${\(
-    $importers{$target} ||= eval qq{
-      package $target;
-      sub { shift->import(\@_) };
-    } or die "Couldn't build importer for $target: $@"
-  )}(@args);
+  $class->${_importer($target)}(import => @args);
+}
+
+sub unimport::out_of {
+  my ($class, $target, @args) = @_;
+  $class->${_importer($target)}(unimport => @args);
 }
 
 1;
@@ -60,6 +69,13 @@ Note 2: You do B<not> need to do anything to Thing1 to be able to call
 C<import::into> on it. This is a global method, and is callable on any
 package (and in fact on any object as well, although it's rarer that you'd
 want to do that).
+
+Finally, we also provide an C<unimport::out_of> to allow the exporting of the
+effect of C<no>:
+
+  sub unimport {
+    Moose->unimport::out_of(scalar caller); # no MyThing == no Moose
+  }
 
 If how and why this all works is of interest to you, please read on to the
 description immediately below.
