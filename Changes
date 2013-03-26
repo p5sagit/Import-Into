@@ -1,5 +1,5 @@
 1.001001 - 2013-03-25
-  - fix NAME in Makefile.PL (RT#84211)
+  - fix NAME in Makefile.PL (RT#84207)
 
 1.001000 - 2012-05-12
   - add unimport::out_of
