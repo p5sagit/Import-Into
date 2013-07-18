@@ -1,19 +1,19 @@
-1.001001 - 2013-03-25
+1.001001   2013-03-25
   - fix NAME in Makefile.PL (RT#84207)
 
-1.001000 - 2012-05-12
+1.001000   2012-05-12
   - add unimport::out_of
 
-1.000003 - 2012-05-06
+1.000003   2012-05-06
   - clarify how the method name trick works since apparently now people
     understand the eval/import trick they've noticed that that isn't the
     only bit of crazy
 
-1.000002 - 2012-05-05
+1.000002   2012-05-05
   - improve explanation and add more examples to the SYNOPSIS
 
-1.000001 - 2012-05-03
+1.000001   2012-05-03
   - correct NAME in Makefile.PL
 
-1.000000 - 2012-05-03
+1.000000   2012-05-03
   - initial release
