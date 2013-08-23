@@ -181,6 +181,12 @@ you're receiving this from a parameter, I recommend using L<Module::Runtime>:
 
 And that's it.
 
+=head1 ACKNOWLEDGEMENTS
+
+Thanks to Getty for asking "how can I get C<< use strict; use warnings; >>
+turned on for all consumers of my code?" and then "why is this not a
+module?!".
+
 =head1 AUTHOR
 
 mst - Matt S. Trout (cpan:MSTROUT) <mst@shadowcat.co.uk>
