@@ -9,7 +9,8 @@ my %importers;
 
 sub _importer {
   my $target = shift;
-  my ($package, $file, $line) = $target =~ /[^0-9]/ ? ($target) : caller($target + 1);
+  my ($package, $file, $line)
+    = $target =~ /[^0-9]/ ? ($target) : caller($target + 1);
   my $code = qq{package $package;\n}
     . ($file ? "#line $line \"$file\"\n" : '')
     . 'sub { my $m = splice @_, 1, 1; shift->$m(@_) };'."\n";
