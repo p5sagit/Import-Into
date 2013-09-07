@@ -20,9 +20,22 @@ BEGIN {
     my $target = caller;
     warnings->import::into($target);
     MyExporter->import::into($target, 'thing');
+    CheckFile->import::into(1);
   }
 
   $INC{"MultiExporter.pm"} = 1;
+}
+
+my @checkcaller;
+BEGIN {
+
+  package CheckFile;
+
+  sub import {
+    @checkcaller = caller;
+  }
+
+  $INC{"CheckFile.pm"} = 1;
 }
 
 BEGIN {
@@ -31,6 +44,7 @@ BEGIN {
 
   no warnings;
 
+#line 1
   use MultiExporter;
 
   sub test {
@@ -48,3 +62,7 @@ is(do {
 is(scalar @w, 1, 'Only one entry in @w');
 
 like($w[0], qr/uninitialized/, 'Correct warning');
+
+is $checkcaller[0], 'TestPackage', 'import by level has correct package';
+is $checkcaller[1], __FILE__, 'import by level has correct file';
+is $checkcaller[2], 1, 'import by level has correct line';
