@@ -198,7 +198,7 @@ mst - Matt S. Trout (cpan:MSTROUT) <mst@shadowcat.co.uk>
 
 =head1 CONTRIBUTORS
 
-None yet - maybe this software is perfect! (ahahahahahahahahaha)
+haarg - Graham Knop (cpan:HAARG) <haarg@haarg.org>
 
 =head1 COPYRIGHT
 
