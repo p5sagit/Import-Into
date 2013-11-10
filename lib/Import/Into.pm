@@ -5,30 +5,24 @@ use warnings FATAL => 'all';
 
 our $VERSION = '1.001001'; # 1.1.1
 
-my %importers;
-
-sub _importer {
+sub _prelude {
   my $target = shift;
   my ($package, $file, $line)
     = $target =~ /[^0-9]/ ? ($target) : caller($target + 1);
-  my $code = qq{package $package;\n}
+  qq{package $package;\n}
     . ($file ? "#line $line \"$file\"\n" : '')
-    . 'sub { my $m = splice @_, 1, 1; shift->$m(@_) };'."\n";
-  my $sub = \(eval $code
-    or die "Couldn't build importer for $package: $@");
-  $importers{$target} = $sub
-    unless $file;
-  $sub;
 }
 
 sub import::into {
   my ($class, $target, @args) = @_;
-  $class->${_importer($target)}(import => @args);
+  eval _prelude($target) . '$class->import(@args); 1'
+    or die $@;
 }
 
 sub unimport::out_of {
   my ($class, $target, @args) = @_;
-  $class->${_importer($target)}(unimport => @args);
+  eval _prelude($target) . '$class->unimport(@args); 1'
+    or die $@;
 }
 
 1;
