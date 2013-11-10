@@ -8,21 +8,25 @@ our $VERSION = '1.001001'; # 1.1.1
 sub _prelude {
   my $target = shift;
   my ($package, $file, $line)
-    = $target =~ /[^0-9]/ ? ($target) : caller($target + 1);
+    = $target =~ /[^0-9]/ ? ($target) : caller($target + 2);
   qq{package $package;\n}
     . ($file ? "#line $line \"$file\"\n" : '')
 }
 
+sub _make_action {
+  my ($action, $target) = @_;
+  eval _prelude($target).qq{sub { shift->$action(\@_) }}
+    or die "Failed to build action sub to ${action} for ${target}: $@";
+}
+
 sub import::into {
   my ($class, $target, @args) = @_;
-  eval _prelude($target) . '$class->import(@args); 1'
-    or die $@;
+  _make_action(import => $target)->($class, @args);
 }
 
 sub unimport::out_of {
   my ($class, $target, @args) = @_;
-  eval _prelude($target) . '$class->unimport(@args); 1'
-    or die $@;
+  _make_action(unimport => $target)->($class, @args);
 }
 
 1;
