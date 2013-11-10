@@ -136,7 +136,7 @@ know if something's a pragma, and second that you can't use either of
 these approaches alone on something like L<Moose> or L<Moo> that's both
 an exporter and a pragma.
 
-So, the complete solution is:
+So, a solution for that is:
 
   my $sub = eval "package $target; sub { shift->import(\@_) }";
   $sub->($thing, @import_args);
@@ -144,6 +144,20 @@ So, the complete solution is:
 which means that import is called from the right place for pragmas to take
 effect, and from the right package for caller checking to work - and so
 behaves correctly for all types of exporter, for pragmas, and for hybrids.
+
+Additionally, some import routines check the filename they are being imported
+to.  This can be dealt with by generating a L<#line directive|perlsyn/Plain
+Old Comments (Not!)> in the eval, which will change what C<caller> reports for
+the filename when called in the importer. The filename and line number to use
+in the directive then need to be fetched using C<caller>:
+
+  my ($terget, $file, $line) = caller(1);
+  my $sub = eval qq{
+    package $target;
+  #line $line "$file"
+    sub { shift->import(\@_) }
+  };
+  $sub->($thing, @import_args);
 
 Remembering all this, however, is excessively irritating. So I wrote a module
 so I didn't have to anymore. Loading L<Import::Into> creates a global method
