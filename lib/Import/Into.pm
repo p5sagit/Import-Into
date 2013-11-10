@@ -151,7 +151,7 @@ Old Comments (Not!)> in the eval, which will change what C<caller> reports for
 the filename when called in the importer. The filename and line number to use
 in the directive then need to be fetched using C<caller>:
 
-  my ($terget, $file, $line) = caller(1);
+  my ($target, $file, $line) = caller(1);
   my $sub = eval qq{
     package $target;
   #line $line "$file"
