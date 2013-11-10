@@ -43,11 +43,13 @@ Import::Into - import packages into other packages
 
   use Thing1 ();
   use Thing2 ();
+  use Thing3 ();
 
   sub import {
     my $target = caller;
     Thing1->import::into($target);
     Thing2->import::into($target, qw(import arguments));
+    Thing3->import::into(1); # import to level
   }
 
 Note: you don't need to do anything more clever than this provided you
@@ -72,6 +74,11 @@ Note 2: You do B<not> need to do anything to Thing1 to be able to call
 C<import::into> on it. This is a global method, and is callable on any
 package (and in fact on any object as well, although it's rarer that you'd
 want to do that).
+
+If you provide C<import::into> with an integer instead of a package name, it
+will be used as the number of stack frames to skip to find where to export to.
+This has the advantage of preserving the apparent filename and line number
+being exported to, which some modules (L<autodie>, L<strictures>) check.
 
 Finally, we also provide an C<unimport::out_of> to allow the exporting of the
 effect of C<no>:
