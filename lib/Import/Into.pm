@@ -43,7 +43,7 @@ sub unimport::out_of {
  
 =head1 NAME
 
-Import::Into - import packages into other packages 
+Import::Into - import packages into other packages
 
 =head1 SYNOPSIS
 
@@ -53,53 +53,44 @@ Import::Into - import packages into other packages
 
   use Thing1 ();
   use Thing2 ();
-  use Thing3 ();
 
+  # simple
+  sub import {
+    Thing1->import::into(scalar caller);
+  }
+
+  # multiple
   sub import {
     my $target = caller;
     Thing1->import::into($target);
     Thing2->import::into($target, qw(import arguments));
-    Thing3->import::into(1); # import to level
   }
 
-Note: you don't need to do anything more clever than this provided you
-document that people wanting to re-export your module should also be using
-L<Import::Into>. In fact, for a single module you can simply do:
-
+  # by level
   sub import {
-    ...
-    Thing1->import::into(scalar caller);
+    Thing1->import::into(1);
   }
 
-Notably, this works:
-
+  # with exporter
   use base qw(Exporter);
-
   sub import {
     shift->export_to_level(1);
-    Thing1->import::into(scalar caller);
+    Thing1->import::into(1);
   }
 
-Note 2: You do B<not> need to do anything to Thing1 to be able to call
+  # no My::MultiExporter == no Thing1
+  sub unimport {
+    Thing1->unimport::out_of(scalar caller);
+  }
+
+You don't need to do anything more clever than this provided you
+document that people wanting to re-export your module should also be using
+L<Import::Into>.
+
+Note: You do B<not> need to make ayny changes to Thing1 to be able to call
 C<import::into> on it. This is a global method, and is callable on any
 package (and in fact on any object as well, although it's rarer that you'd
 want to do that).
-
-If you provide C<import::into> with an integer instead of a package name, it
-will be used as the number of stack frames to skip to find where to export to.
-This has the advantage of preserving the apparent filename and line number
-being exported to, which some modules (L<autodie>, L<strictures>) check.
-
-Finally, we also provide an C<unimport::out_of> to allow the exporting of the
-effect of C<no>:
-
-  # unimport::out_of was added in 1.1.0 (1.001000)
-  sub unimport {
-    Moose->unimport::out_of(scalar caller); # no MyThing == no Moose
-  }
-
-If how and why this all works is of interest to you, please read on to the
-description immediately below.
 
 =head1 DESCRIPTION
 
@@ -107,12 +98,56 @@ Writing exporters is a pain. Some use L<Exporter>, some use L<Sub::Exporter>,
 some use L<Moose::Exporter>, some use L<Exporter::Declare> ... and some things
 are pragmas.
 
-If you want to re-export other things, you have to know which is which.
-L<Exporter> subclasses provide export_to_level, but if they overrode their
-import method all bets are off. L<Sub::Exporter> provides an into parameter
-but figuring out something used it isn't trivial. Pragmas need to have
-their C<import> method called directly since they affect the current unit of
-compilation.
+Exporting on someone else's behalf is harder.  The exporters don't provide a
+consistent API for this, and pragmas need to have their import method called
+directly, since they effect the current unit of compilation.
+
+C<Import::Into> provides global methods to make this painless.
+
+=head1 METHODS
+
+=head2 $package->import::into( $target, @arguments );
+
+A global method, callable on any package.  Imports the given package into
+C<$target>.  C<@arguments> are passed along to the package's import method.
+
+C<$target> can be an package name to export to, an integer for the caller level to export to, or a hashref with the following options:
+
+=over 4
+
+=item package
+
+The target package to export to.
+
+=item filename
+
+The apparent filename to export to.  Some exporting modules, such as L<autodie> or L<strictures>, care about the filename they are being imported to.
+
+=item line
+
+The apparent line number to export to.  To be combined with the C<filename> option.
+
+=item level
+
+The caller level to export to.  This will automatically populate the C<package>, C<filename>, and C<line> options, making it the easiest most constent option.
+
+=item version
+
+A version number to check for the module.  The equivalent of specifying the version number on a C<use> line.
+
+=back
+
+=head2 $package->unimport::out_of( $target, @arguments );
+
+Equivalent to C<import::into>, but dispatches to C<$package>'s C<unimport> method instead of C<import>.
+
+=head1 WHY USE THIS MODULE
+
+The APIs for exporting modules aren't consistent.  L<Exporter> subclasses
+provide export_to_level, but if they overrode their import method all bets
+are off.  L<Sub::Exporter> provides an into parameter but figuring out
+something used it isn't trivial. Pragmas need to have their C<import> method
+called directly since they affect the current unit of compilation.
 
 It's ... annoying.
 
