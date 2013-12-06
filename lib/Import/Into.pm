@@ -204,6 +204,9 @@ in the directive then need to be fetched using C<caller>:
   };
   $sub->($thing, @import_args);
 
+And you need to switch between these implementations depending on if you are
+targetting a specific package, or something in your call stack.
+
 Remembering all this, however, is excessively irritating. So I wrote a module
 so I didn't have to anymore. Loading L<Import::Into> creates a global method
 C<import::into> which you can call on any package to import it into another
