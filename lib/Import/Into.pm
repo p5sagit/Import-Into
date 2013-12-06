@@ -7,15 +7,25 @@ our $VERSION = '1.001001'; # 1.1.1
 
 sub _prelude {
   my $target = shift;
-  my ($package, $file, $line)
-    = $target =~ /[^0-9]/ ? ($target) : caller($target + 2);
+  my ($package, $file, $line, $level)
+    = ref $target         ? @{$target}{qw(package filename line)}
+    : $target =~ /[^0-9]/ ? ($target)
+                          : (undef, undef, undef, $target);
+  if (defined $level) {
+    my ($p, $fn, $ln) = caller($level + 2);
+    $package ||= $p;
+    $file    ||= $fn;
+    $line    ||= $ln;
+  }
   qq{package $package;\n}
     . ($file ? "#line $line \"$file\"\n" : '')
 }
 
 sub _make_action {
   my ($action, $target) = @_;
-  eval _prelude($target).qq{sub { shift->$action(\@_) }}
+  my $version = ref $target && $target->{version};
+  my $ver_check = $version ? '$_[0]->VERSION($version);' : '';
+  eval _prelude($target).qq{sub { $ver_check shift->$action(\@_) }}
     or die "Failed to build action sub to ${action} for ${target}: $@";
 }
 

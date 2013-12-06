@@ -21,18 +21,23 @@ BEGIN {
     warnings->import::into($target);
     MyExporter->import::into($target, 'thing');
     CheckFile->import::into(1);
+
   }
 
   $INC{"MultiExporter.pm"} = 1;
 }
 
 my @checkcaller;
+my $checkversion;
 BEGIN {
 
   package CheckFile;
 
   sub import {
     @checkcaller = caller;
+  }
+  sub VERSION {
+    $checkversion = $_[1];
   }
 
   $INC{"CheckFile.pm"} = 1;
@@ -66,3 +71,15 @@ like($w[0], qr/uninitialized/, 'Correct warning');
 is $checkcaller[0], 'TestPackage', 'import by level has correct package';
 is $checkcaller[1], __FILE__, 'import by level has correct file';
 is $checkcaller[2], 1, 'import by level has correct line';
+
+CheckFile->import::into({
+  package  => 'ExplicitPackage',
+  filename => 'explicit-file.pl',
+  line     => 42,
+  version  => 219,
+});
+
+is $checkcaller[0], 'ExplicitPackage',  'import with hash has correct package';
+is $checkcaller[1], 'explicit-file.pl', 'import with hash has correct file';
+is $checkcaller[2], 42,                 'import with hash has correct line';
+is $checkversion, 219,                  'import with hash has correct version';
