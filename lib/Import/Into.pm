@@ -85,9 +85,8 @@ Import::Into - import packages into other packages
     Thing1->unimport::out_of(scalar caller);
   }
 
-You don't need to do anything more clever than this provided you
-document that people wanting to re-export your module should also be using
-L<Import::Into>.
+People wanting to re-export your module should also be using L<Import::Into>.
+Any exporter or pragma will work seamlessly.
 
 Note: You do B<not> need to make any changes to Thing1 to be able to call
 C<import::into> on it. This is a global method, and is callable on any
