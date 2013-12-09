@@ -40,7 +40,9 @@ sub unimport::out_of {
 }
 
 1;
- 
+
+__END__
+
 =head1 NAME
 
 Import::Into - import packages into other packages
@@ -87,7 +89,7 @@ You don't need to do anything more clever than this provided you
 document that people wanting to re-export your module should also be using
 L<Import::Into>.
 
-Note: You do B<not> need to make ayny changes to Thing1 to be able to call
+Note: You do B<not> need to make any changes to Thing1 to be able to call
 C<import::into> on it. This is a global method, and is callable on any
 package (and in fact on any object as well, although it's rarer that you'd
 want to do that).
@@ -111,7 +113,8 @@ C<Import::Into> provides global methods to make this painless.
 A global method, callable on any package.  Imports the given package into
 C<$target>.  C<@arguments> are passed along to the package's import method.
 
-C<$target> can be an package name to export to, an integer for the caller level to export to, or a hashref with the following options:
+C<$target> can be an package name to export to, an integer for the
+caller level to export to, or a hashref with the following options:
 
 =over 4
 
@@ -121,25 +124,32 @@ The target package to export to.
 
 =item filename
 
-The apparent filename to export to.  Some exporting modules, such as L<autodie> or L<strictures>, care about the filename they are being imported to.
+The apparent filename to export to.  Some exporting modules, such as
+L<autodie> or L<strictures>, care about the filename they are being imported
+to.
 
 =item line
 
-The apparent line number to export to.  To be combined with the C<filename> option.
+The apparent line number to export to.  To be combined with the C<filename>
+option.
 
 =item level
 
-The caller level to export to.  This will automatically populate the C<package>, C<filename>, and C<line> options, making it the easiest most constent option.
+The caller level to export to.  This will automatically populate the
+C<package>, C<filename>, and C<line> options, making it the easiest most
+constent option.
 
 =item version
 
-A version number to check for the module.  The equivalent of specifying the version number on a C<use> line.
+A version number to check for the module.  The equivalent of specifying the
+version number on a C<use> line.
 
 =back
 
 =head2 $package->unimport::out_of( $target, @arguments );
 
-Equivalent to C<import::into>, but dispatches to C<$package>'s C<unimport> method instead of C<import>.
+Equivalent to C<import::into>, but dispatches to C<$package>'s C<unimport>
+method instead of C<import>.
 
 =head1 WHY USE THIS MODULE
 
@@ -276,3 +286,5 @@ as listed above.
 
 This library is free software and may be distributed under the same terms
 as perl itself.
+
+=cut
