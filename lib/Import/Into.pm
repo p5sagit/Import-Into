@@ -3,7 +3,7 @@ package Import::Into;
 use strict;
 use warnings FATAL => 'all';
 
-our $VERSION = '1.001001'; # 1.1.1
+our $VERSION = '1.002000'; # 1.2.0
 
 sub _prelude {
   my $target = shift;
