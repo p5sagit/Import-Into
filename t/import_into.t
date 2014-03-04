@@ -43,25 +43,26 @@ BEGIN {
   $INC{"CheckFile.pm"} = 1;
 }
 
-BEGIN {
+eval q{
 
   package TestPackage;
 
   no warnings;
 
-#line 1
+#line 1 "import_into_inline.pl"
   use MultiExporter;
 
   sub test {
     thing . undef
   }
-}
+  1;
+} or die $@;
 
 my @w;
 
 is(do {
   local $SIG{__WARN__} = sub { push @w, @_; };
-  TestPackage::test;
+  TestPackage::test();
 }, 'thing', 'returned thing ok');
 
 is(scalar @w, 1, 'Only one entry in @w');
@@ -69,7 +70,7 @@ is(scalar @w, 1, 'Only one entry in @w');
 like($w[0], qr/uninitialized/, 'Correct warning');
 
 is $checkcaller[0], 'TestPackage', 'import by level has correct package';
-is $checkcaller[1], __FILE__, 'import by level has correct file';
+is $checkcaller[1], 'import_into_inline.pl', 'import by level has correct file';
 is $checkcaller[2], 1, 'import by level has correct line';
 
 CheckFile->import::into({
