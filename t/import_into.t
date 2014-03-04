@@ -47,7 +47,7 @@ eval q{
 
   package TestPackage;
 
-  no warnings;
+  no warnings FATAL => 'all';
 
 #line 1 "import_into_inline.pl"
   use MultiExporter;
