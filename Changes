@@ -1,5 +1,7 @@
 Revision history for Import-Into
 
+  - minor metadata updates
+
 1.002001 - 2014-03-04
   - fix tests and Makefile.PL to support perl 5.6
 

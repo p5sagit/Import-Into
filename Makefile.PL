@@ -8,6 +8,7 @@ WriteMakefile(
   VERSION_FROM => 'lib/Import/Into.pm',
   PREREQ_PM => { },
   LICENSE => 'perl',
+  MIN_PERL_VERSION => '5.006',
 
   META_MERGE => {
     'meta-spec' => { version => 2 },
