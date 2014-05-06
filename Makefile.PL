@@ -26,4 +26,6 @@ WriteMakefile(
     },
 
   },
+
+  realclean => { FILES => [ 'Distar/', 'MANIFEST*' ] },
 );
