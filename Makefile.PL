@@ -25,7 +25,21 @@ WriteMakefile(
           web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Import-Into',
       },
     },
-
+    prereqs => {
+      runtime => {
+        requires => {
+          'strict' => '0',
+          'warnings' => '0',
+        },
+      },
+      test => {
+        requires => {
+          'Exporter' => '0',
+          'base' => '0',
+          'Test::More' => '0',
+        },
+      },
+    },
   },
 
   realclean => { FILES => [ 'Distar/', 'MANIFEST*' ] },
