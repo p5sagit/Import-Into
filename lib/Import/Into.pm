@@ -262,6 +262,11 @@ you're receiving this from a parameter, I recommend using L<Module::Runtime>:
 
 And that's it.
 
+=head1 SEE ALSO
+
+I gave a lightning talk on this module (and L<curry> and L<Safe::Isa>) at
+L<YAPC::NA 2013|https://www.youtube.com/watch?v=wFXWV2yY7gE&t=46m05s>.
+
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to Getty for asking "how can I get C<< use strict; use warnings; >>
