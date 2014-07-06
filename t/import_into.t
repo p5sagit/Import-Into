@@ -12,6 +12,8 @@ BEGIN {
 
   sub thing { 'thing' }
 
+  $INC{"MyExporter.pm"} = 1;
+
   package MultiExporter;
 
   use Import::Into;
@@ -84,3 +86,7 @@ is $checkcaller[0], 'ExplicitPackage',  'import with hash has correct package';
 is $checkcaller[1], 'explicit-file.pl', 'import with hash has correct file';
 is $checkcaller[2], 42,                 'import with hash has correct line';
 is $checkversion, 219,                  'import with hash has correct version';
+
+ok( !IPC::Open3->can("open3"), "IPC::Open3 is unloaded" );
+IPC::Open3->import::into("TestPackage");
+ok( TestPackage->can("open3"), "IPC::Open3 was use'd and import::into'd" );

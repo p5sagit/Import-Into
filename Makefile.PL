@@ -30,6 +30,7 @@ WriteMakefile(
         requires => {
           'strict' => '0',
           'warnings' => '0',
+          'Module::Runtime' => '0',
         },
       },
       test => {

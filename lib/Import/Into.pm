@@ -2,6 +2,7 @@ package Import::Into;
 
 use strict;
 use warnings FATAL => 'all';
+use Module::Runtime;
 
 our $VERSION = '1.002002'; # 1.2.2
 
@@ -24,8 +25,9 @@ sub _prelude {
 sub _make_action {
   my ($action, $target) = @_;
   my $version = ref $target && $target->{version};
-  my $ver_check = $version ? '$_[0]->VERSION($version);' : '';
-  eval _prelude($target).qq{sub { $ver_check shift->$action(\@_) }}
+  my $ver_check = $version ? ', $version' : '';
+  eval _prelude($target)
+    . qq{sub { Module::Runtime::use_module( shift$ver_check )->$action(\@_) }}
     or die "Failed to build action sub to ${action} for ${target}: $@";
 }
 
@@ -52,9 +54,6 @@ Import::Into - import packages into other packages
   package My::MultiExporter;
 
   use Import::Into;
-
-  use Thing1 ();
-  use Thing2 ();
 
   # simple
   sub import {
@@ -109,8 +108,8 @@ C<Import::Into> provides global methods to make this painless.
 
 =head2 $package->import::into( $target, @arguments );
 
-A global method, callable on any package.  Imports the given package into
-C<$target>.  C<@arguments> are passed along to the package's import method.
+A global method, callable on any package.  Loads and imports the given package
+into C<$target>.  C<@arguments> are passed along to the package's import method.
 
 C<$target> can be an package name to export to, an integer for the
 caller level to export to, or a hashref with the following options:
@@ -192,7 +191,8 @@ an exporter and a pragma.
 
 So, a solution for that is:
 
-  my $sub = eval "package $target; sub { shift->import(\@_) }";
+  use Module::Runtime;
+  my $sub = eval "package $target; sub { use_module(shift)->import(\@_) }";
   $sub->($thing, @import_args);
 
 which means that import is called from the right place for pragmas to take
@@ -209,7 +209,7 @@ in the directive then need to be fetched using C<caller>:
   my $sub = eval qq{
     package $target;
   #line $line "$file"
-    sub { shift->import(\@_) }
+    sub { use_module(shift)->import(\@_) }
   };
   $sub->($thing, @import_args);
 
@@ -252,14 +252,6 @@ For more craziness of this order, have a look at the article I wrote at
 L<http://shadow.cat/blog/matt-s-trout/madness-with-methods> which covers
 coderef abuse and the C<${\...}> syntax.
 
-Final note: You do still need to ensure that you already loaded C<$thing> - if
-you're receiving this from a parameter, I recommend using L<Module::Runtime>:
-
-  use Import::Into;
-  use Module::Runtime qw(use_module);
-
-  use_module($thing)->import::into($target, @import_args);
-
 And that's it.
 
 =head1 SEE ALSO
@@ -280,6 +272,8 @@ mst - Matt S. Trout (cpan:MSTROUT) <mst@shadowcat.co.uk>
 =head1 CONTRIBUTORS
 
 haarg - Graham Knop (cpan:HAARG) <haarg@haarg.org>
+
+Mithaldu - Christian Walde (cpan:MITHALDU) <walde.christian@gmail.com>
 
 =head1 COPYRIGHT
 
