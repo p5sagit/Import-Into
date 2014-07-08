@@ -1,7 +1,7 @@
 Revision history for Import-Into
 
   - module loading is now done while importing, making it unnecessary to load
-    them beforehand
+    them beforehand (RT#96995, Christian Walde)
 
 1.002002 - 2014-05-06
   - minor metadata updates
