@@ -47,7 +47,7 @@ __END__
 
 =head1 NAME
 
-Import::Into - import packages into other packages
+Import::Into - Import packages into other packages
 
 =head1 SYNOPSIS
 
