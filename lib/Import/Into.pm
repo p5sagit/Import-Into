@@ -4,7 +4,7 @@ use strict;
 use warnings FATAL => 'all';
 use Module::Runtime;
 
-our $VERSION = '1.002003';
+our $VERSION = '1.002004';
 
 sub _prelude {
   my $target = shift;
