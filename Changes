@@ -1,5 +1,7 @@
 Revision history for Import-Into
 
+  - fix prerequisite declarations for older toolchain
+
 1.002003 - 2014-07-09
   - module loading is now done while importing, making it unnecessary to load
     them beforehand (RT#96995, Christian Walde)
