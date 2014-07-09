@@ -1,5 +1,6 @@
 Revision history for Import-Into
 
+1.002004 - 2014-07-09
   - fix prerequisite declarations for older toolchain
 
 1.002003 - 2014-07-09
