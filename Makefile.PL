@@ -27,10 +27,11 @@ my %WriteMakefileArgs = (
   },
 
   META_ADD => {
+    'meta-spec' => { version => 2 },
     prereqs => {
       configure => {
         requires => {
-          'ExtUtils::MakeMaker' = 0,
+          'ExtUtils::MakeMaker' => 0,
         },
       },
       runtime => {
