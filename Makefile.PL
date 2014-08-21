@@ -42,7 +42,6 @@ my %META = (
 );
 
 my %MM_ARGS = (
-  realclean => { FILES => [ 'Distar/', 'MANIFEST*' ] },
 );
 
 ## BOILERPLATE ###############################################################
