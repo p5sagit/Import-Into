@@ -9,7 +9,7 @@ our $VERSION = '1.002004';
 sub _prelude {
   my $target = shift;
   my ($package, $file, $line, $level)
-    = ref $target         ? @{$target}{qw(package filename line)}
+    = ref $target         ? @{$target}{qw(package filename line level)}
     : $target =~ /[^0-9]/ ? ($target)
                           : (undef, undef, undef, $target);
   if (defined $level) {
