@@ -14,6 +14,7 @@ BEGIN {
 }
 
 my @importcaller;
+my @versioncaller;
 my $version;
 BEGIN {
   package CheckFile;
@@ -24,6 +25,7 @@ BEGIN {
   }
   sub VERSION {
     $version = $_[1];
+    @versioncaller = caller;
   }
 }
 
@@ -72,8 +74,10 @@ is $importcaller[1], 'import_into_inline.pl',
   'import by level has correct file';
 is $importcaller[2], 1,
   'import by level has correct line';
+is scalar @versioncaller, 0, 'VERSION not called when not specified';
 
 @importcaller = ();
+@versioncaller = ();
 $version = undef;
 CheckFile->import::into({
   package  => 'ExplicitPackage',
@@ -88,6 +92,12 @@ is $importcaller[1], 'explicit-file.pl',
   'import with hash has correct file';
 is $importcaller[2], 42,
   'import with hash has correct line';
+is $versioncaller[0], 'ExplicitPackage',
+  'VERSION with hash has correct package';
+is $versioncaller[1], 'explicit-file.pl',
+  'VERSION with hash has correct file';
+is $versioncaller[2], 42,
+  'VERSION with hash has correct line';
 is $version, 219,
   'import with hash has correct version';
 
@@ -104,6 +114,7 @@ BEGIN {
 }
 
 @importcaller = ();
+@versioncaller = ();
 $version = undef;
 eval q{
   package ExplicitLevel;
@@ -119,6 +130,12 @@ is $importcaller[1], 'explicit-level.pl',
   'import with level in hash has correct file';
 is $importcaller[2], 42,
   'import with level in hash has correct line';
+is $versioncaller[0], 'ExplicitLevel',
+  'VERSION with level in hash has correct package';
+is $versioncaller[1], 'explicit-level.pl',
+  'VERSION with level in hash has correct file';
+is $versioncaller[2], 42,
+  'VERSION with level in hash has correct line';
 is $version, 219,
   'import with level in hash has correct version';
 

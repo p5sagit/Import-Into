@@ -25,9 +25,13 @@ sub _prelude {
 sub _make_action {
   my ($action, $target) = @_;
   my $version = ref $target && $target->{version};
-  my $ver_check = $version ? ', $version' : '';
   eval _prelude($target)
-    . qq{sub { Module::Runtime::use_module( shift$ver_check )->$action(\@_) }}
+    . q[sub {]
+    . q[  my $module = shift;]
+    . q[  Module::Runtime::require_module($module);]
+    . (ref $target && exists $target->{version} ? q[  $module->VERSION($version);] : q[])
+    . q[  $module->].$action.q[(@_);]
+    . q[}]
     or die "Failed to build action sub to ${action} for ${target}: $@";
 }
 
