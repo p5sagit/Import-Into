@@ -103,6 +103,25 @@ BEGIN {
   }
 }
 
+@importcaller = ();
+$version = undef;
+eval q{
+  package ExplicitLevel;
+
+#line 42 "explicit-level.pl"
+  use LevelExporter;
+  1;
+} or die $@;
+
+is $importcaller[0], 'ExplicitLevel',
+  'import with level in hash has correct package';
+is $importcaller[1], 'explicit-level.pl',
+  'import with level in hash has correct file';
+is $importcaller[2], 42,
+  'import with level in hash has correct line';
+is $version, 219,
+  'import with level in hash has correct version';
+
 ok( !IPC::Open3->can("open3"), "IPC::Open3 is unloaded" );
 IPC::Open3->import::into("TestPackage");
 ok( TestPackage->can("open3"), "IPC::Open3 was use'd and import::into'd" );
