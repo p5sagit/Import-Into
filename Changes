@@ -1,5 +1,6 @@
 Revision history for Import-Into
 
+1.002005 - 2015-08-28
   - fix level as a hashref parameter
 
 1.002004 - 2014-07-09
