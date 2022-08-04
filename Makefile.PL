@@ -6,10 +6,9 @@ my %META = (
   license => 'perl_5',
   dynamic_config => 0,
   resources => {
-    # r/w: p5sagit@git.shadowcat.co.uk:Import-Into.git
     repository => {
-      url => 'git://git.shadowcat.co.uk/p5sagit/Import-Into.git',
-      web => 'http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=p5sagit/Import-Into.git',
+      url => 'https://github.com/p5sagit/Import-Into.git',
+      web => 'https://github.com/p5sagit/Import-Into',
       type => 'git',
     },
     bugtracker => {
