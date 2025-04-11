@@ -104,7 +104,7 @@ are pragmas.
 
 Exporting on someone else's behalf is harder.  The exporters don't provide a
 consistent API for this, and pragmas need to have their import method called
-directly, since they effect the current unit of compilation.
+directly, since they affect the current unit of compilation.
 
 C<Import::Into> provides global methods to make this painless.
 
