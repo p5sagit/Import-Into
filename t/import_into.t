@@ -1,6 +1,6 @@
 use strict;
-use warnings FATAL => 'all';
-use Test::More qw(no_plan);
+use warnings;
+use Test::More 0.88;
 
 BEGIN {
   package MyExporter;
@@ -142,3 +142,5 @@ is $version, 219,
 ok( !IPC::Open3->can("open3"), "IPC::Open3 is unloaded" );
 IPC::Open3->import::into("TestPackage");
 ok( TestPackage->can("open3"), "IPC::Open3 was use'd and import::into'd" );
+
+done_testing;
